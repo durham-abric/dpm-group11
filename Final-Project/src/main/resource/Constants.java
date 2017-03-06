@@ -1,7 +1,7 @@
 package main.resource;
 
 /**
- * Created by JohnWu on 2017-02-25.
+ * Stores all the constant variables in our code
  */
 public class Constants {
 

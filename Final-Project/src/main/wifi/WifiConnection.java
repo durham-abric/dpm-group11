@@ -73,9 +73,6 @@ public class WifiConnection {
 	 */
 	public Map getData() throws IOException, UnknownHostException, ParseException {
 
-		if (this.debugPrint)
-			System.out.println("Connecting...");
-
 		// Connect to server, set timeout
 		Socket conn = new Socket(serverIP, portNumber);
 		conn.setSoTimeout(timeout);
@@ -88,9 +85,6 @@ public class WifiConnection {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		PrintWriter writer = new PrintWriter(conn.getOutputStream(), true);
 
-		if (this.debugPrint)
-			System.out.println("Connected. Sending request.");
-
 		// Create data to send to server
 		JSONObject obj = new JSONObject();
 		obj.put("Type", "REQ");
@@ -98,9 +92,6 @@ public class WifiConnection {
 
 		// Send data to server
 		writer.println(obj.toJSONString());
-
-		if (this.debugPrint)
-			System.out.println("Request sent; waiting for response");
 
 		// Wait for and read response from server
 		String response = reader.readLine();
@@ -114,7 +105,7 @@ public class WifiConnection {
 		} else if (rJSONObject.containsKey("Status") && !rJSONObject.get("Status").equals("OK")) {
 			throw new IOException("Bad server status: " + rJSONObject.get("Status"));
 		} else if (this.debugPrint) {
-			System.out.println("Response received OK.");
+			// Continue
 		}
 
 		// Remove type and status as they are not needed by the user

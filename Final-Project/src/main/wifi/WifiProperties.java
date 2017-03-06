@@ -8,7 +8,7 @@ public class WifiProperties {
     /**
      * IP Address of the server running the application.
      */
-    public static final String SERVER_IP = "192.168.2.3";
+    public static final String SERVER_IP = "192.168.2.31";
 
     /**
      * Team number to be used to give commands from server.

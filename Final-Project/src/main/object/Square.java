@@ -5,72 +5,105 @@ package main.object;
  */
 public class Square {
 
-    private int x;
-    private int y;
+    private int[] squarePosition;
     private boolean allowed;
-    private double northPosition;
-    private double southPosition;
-    private double eastPosition;
-    private double westPosition;
+    private boolean obstacle = false;
+    private boolean ballDisp = false;
+    private boolean ballDispApproach = false;
+    private boolean shootingPosition = false;
+    private double[] centerCoordinate;
+    private double northLine;
+    private double southLine;
+    private double eastLine;
+    private double westLine;
 
-    public Square() {
+    public Square(int xSqr, int ySqr) {
+        this.squarePosition = new int[2];
+        this.squarePosition[0] = xSqr;
+        this.squarePosition[1] = ySqr;
 
+        this.centerCoordinate =  new double[2];
+        this.centerCoordinate[0] = (squarePosition[0]-0.5)* SQUARE_LENGTH;
+        this.centerCoordinate[1] = (squarePosition[1]-0.5)* SQUARE_LENGTH;
+
+        this.northLine = squarePosition[0]* SQUARE_LENGTH;
+        this.southLine = (squarePosition[0]-1)* SQUARE_LENGTH;
+
+        this.eastLine = squarePosition[1]* SQUARE_LENGTH;
+        this.westLine = (squarePosition[1]-1)* SQUARE_LENGTH;
     }
 
     public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
+        return squarePosition[0];
     }
 
     public int getY() {
-        return y;
+        return squarePosition[1];
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public double getXcm() {
+        return centerCoordinate[0];
+    }
+
+    public double getYcm() {
+        return centerCoordinate[1];
     }
 
     public boolean isAllowed() {
         return allowed;
     }
 
+    public void containsObstacle(){
+        this.obstacle = true;
+        this.allowed = false;
+    }
+
+    public void setBallDispApproach() {
+        this.ballDispApproach = true;
+    }
+
+    public void constainsBallDispenser(){
+        this.ballDisp = true;
+    }
+    public void setShootingPosition(){
+        this.shootingPosition = true;
+    }
+
+    public boolean isObstacle(){
+        return obstacle;
+    }
+
+    public boolean isBallDisp(){
+        return ballDisp;
+    }
+
+    public boolean isBallDispApproach() {
+        return ballDispApproach;
+    }
+
+    public boolean isShootingPosition(){
+        return shootingPosition;
+    }
+
     public void setAllowed(boolean allowed) {
         this.allowed = allowed;
     }
 
-    public double getNorthPosition() {
-        return northPosition;
+    public double getNorthLine() {
+        return northLine;
     }
 
-    public void setNorthPosition(double northPosition) {
-        this.northPosition = northPosition;
+    public double getSouthLine() {
+        return southLine;
     }
 
-    public double getSouthPosition() {
-        return southPosition;
+    public double getEastLine() {
+        return eastLine;
     }
 
-    public void setSouthPosition(double southPosition) {
-        this.southPosition = southPosition;
+    public double getWestLine() {
+        return westLine;
     }
 
-    public double getEastPosition() {
-        return eastPosition;
-    }
-
-    public void setEastPosition(double eastPosition) {
-        this.eastPosition = eastPosition;
-    }
-
-    public double getWestPosition() {
-        return westPosition;
-    }
-
-    public void setWestPosition(double westPosition) {
-        this.westPosition = westPosition;
-    }
 
 }

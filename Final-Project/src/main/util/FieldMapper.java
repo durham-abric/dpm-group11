@@ -23,55 +23,37 @@ public class FieldMapper {
     public FieldMapper( Parameters parameters ) {
         this.parameters = parameters;
         this.squares = new Square[12][12];
-        if ( parameters.getForwardTeam() == 11 ) {
-            mapOffenseBoundaries();
-        } else {
-            mapDefenseBoundaries();
-        }
-
+        mapField();
     }
 
-    /**
-     * A method that maps offense boundaries
-     */
-    public void mapOffenseBoundaries() {
+    public void mapField(){
         for ( int i = 0; i < 12; i++ ) {
             for (int k = 0; k < 12; k++) {
-                Square square = new Square();
-                if ( !isInDefenseRegion( i, k ) && !isGoal( i, k ) ) {
-                    square.setAllowed(true);
+                Square square = new Square(i,k);
+                if (!isInDefenseRegion( i, k ) && !isGoal( i, k ) && !isInGoalRegion(i,k)) {
+                    square.setAllowed((parameters.getForwardTeam() == 11));
+                } else if (!isInOffenseRegion( i, k ) && !isGoal( i, k ) && !isInGoalRegion(i,k)) {
+                    square.setAllowed(!(parameters.getForwardTeam() == 11));
                 } else {
                     square.setAllowed(false);
                 }
-                square.setX(k);
-                square.setY(i);
-                square.setNorthPosition( i * Constants.SQUARE_LENGTH );
-                square.setSouthPosition( ( i - 1 ) * Constants.SQUARE_LENGTH );
-                square.setEastPosition( k * Constants.SQUARE_LENGTH );
-                square.setWestPosition( ( k - 1 ) * Constants.SQUARE_LENGTH );
+
                 squares[i][k] = square;
             }
         }
-    }
 
-    /**
-     * A method that maps defense boundaries
-     */
-    public void mapDefenseBoundaries() {
-        for ( int i = 0; i < 12; i++ ) {
-            for (int k = 0; k < 12; k++) {
-                Square square = new Square();
-                if ( !isInOffenseRegion( i, k ) && !isInGoalRegion( i, k ) && !isGoal( i, k ) ) {
-                    square.setAllowed(true);
-                } else {
-                    square.setAllowed(false);
-                }
-                square.setNorthPosition( i * Constants.SQUARE_LENGTH );
-                square.setSouthPosition( ( i - 1 ) * Constants.SQUARE_LENGTH );
-                square.setEastPosition( k * Constants.SQUARE_LENGTH );
-                square.setWestPosition( ( k - 1 ) * Constants.SQUARE_LENGTH );
-                squares[i][k] = square;
-            }
+        //recognize square ball dispenser is in and the square we must reach to access it
+        squares[parameters.getBallDispenserPosition()[0]][parameters.getBallDispenserPosition()[1]].constainsBallDispenser();
+        String dispDir = parameters.getBallDispenserOrientation();
+
+        if (dispDir.equals("N")){
+            squares[parameters.getBallDispenserPosition()[0]][parameters.getBallDispenserPosition()[1]+1].setBallDispApproach();
+        } else if (dispDir.equals("S")){
+            squares[parameters.getBallDispenserPosition()[0]][parameters.getBallDispenserPosition()[1]-1].setBallDispApproach();
+        } else if (dispDir.equals("E")){
+            squares[parameters.getBallDispenserPosition()[0]+1][parameters.getBallDispenserPosition()[1]].setBallDispApproach();
+        }else if (dispDir.equals("W")){
+            squares[parameters.getBallDispenserPosition()[0]-1][parameters.getBallDispenserPosition()[1]].setBallDispApproach();
         }
     }
 
@@ -83,12 +65,12 @@ public class FieldMapper {
      * @return whether square is in goal region
      */
     public boolean isInGoalRegion( int i, int k ) {
-        int left = ( 12 - parameters.getDefenderZone()[0] ) / 2 ;
-        int right = left * 2;
+        int left = (( 12 - parameters.getDefenderZone()[0] ) / 2)-1;
+        int right = (left + 1) + parameters.getDefenderZone()[0];
         int up = 11;
-        int down = 11 - parameters.getDefenderZone()[1];
+        int down = 10 - parameters.getDefenderZone()[1];
 
-        if ( i >= down && i < up && k >= left && k < right ) {
+        if ( i > down && i < up && k > left && k < right ) {
             return false;
         }
         return true;
@@ -102,11 +84,11 @@ public class FieldMapper {
      * @return whether square is in offense
      */
     public boolean isInOffenseRegion( int i, int k ) {
-        int left = 2 ;
+        int left = 1 ;
         int right = 10;
         int up = 11 - parameters.getForwardLine();
-        int down = 1;
-        if ( i >= down && i < up && k >= left && k < right ) {
+        int down = 0;
+        if ( i > down && i < up && k > left && k < right ) {
             return true;
         }
         return false;
@@ -120,12 +102,12 @@ public class FieldMapper {
      * @return whether square is in defense
      */
     public boolean isInDefenseRegion( int i, int k ) {
-        int left = 2 ;
+        int left = 1 ;
         int right = 10;
         int up = 11;
-        int down = 11 - parameters.getForwardLine();
+        int down = 10 - parameters.getForwardLine();
 
-        if ( i >= down && i < up && k >= left && k < right ) {
+        if ( i > down && i < up && k > left && k < right ) {
             return true;
         }
         return false;
